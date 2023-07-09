@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Workspace\\project-demo\\C#-BookManager\\CFAProject_Backend\\CFAProject_Backend\\CFAProject_Backend.csproj": {}
+    "D:\\Workspace\\CFAProject_Backend\\CFAProject_Backend\\CFAProject_Backend\\CFAProject_Backend.csproj": {}
   },
   "projects": {
-    "D:\\Workspace\\project-demo\\C#-BookManager\\CFAProject_Backend\\CFAProject_Backend\\CFAProject_Backend.csproj": {
+    "D:\\Workspace\\CFAProject_Backend\\CFAProject_Backend\\CFAProject_Backend\\CFAProject_Backend.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Workspace\\project-demo\\C#-BookManager\\CFAProject_Backend\\CFAProject_Backend\\CFAProject_Backend.csproj",
+        "projectUniqueName": "D:\\Workspace\\CFAProject_Backend\\CFAProject_Backend\\CFAProject_Backend\\CFAProject_Backend.csproj",
         "projectName": "CFAProject_Backend",
-        "projectPath": "D:\\Workspace\\project-demo\\C#-BookManager\\CFAProject_Backend\\CFAProject_Backend\\CFAProject_Backend.csproj",
+        "projectPath": "D:\\Workspace\\CFAProject_Backend\\CFAProject_Backend\\CFAProject_Backend\\CFAProject_Backend.csproj",
         "packagesPath": "C:\\Users\\trung\\.nuget\\packages\\",
-        "outputPath": "D:\\Workspace\\project-demo\\C#-BookManager\\CFAProject_Backend\\CFAProject_Backend\\obj\\",
+        "outputPath": "D:\\Workspace\\CFAProject_Backend\\CFAProject_Backend\\CFAProject_Backend\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\trung\\AppData\\Roaming\\NuGet\\NuGet.Config",

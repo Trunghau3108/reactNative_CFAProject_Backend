@@ -13,7 +13,7 @@ namespace CFAProject_Backend.Entities
         /// <summary>
         /// Mã khách hàng
         /// </summary>
-        public string Id { get; set; } = null!;
+        public int Id { get; set; }
         /// <summary>
         /// Mật khẩu đăng nhập
         /// </summary>
