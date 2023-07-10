@@ -21,7 +21,7 @@ namespace CFAProject_Backend.Entities
         /// <summary>
         /// Họ và tên
         /// </summary>
-        public string Fullname { get; set; } = null!;
+        public string Fullname { get; set; } = null;
         /// <summary>
         /// Email
         /// </summary>

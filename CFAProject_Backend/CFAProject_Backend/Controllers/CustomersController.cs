@@ -19,13 +19,18 @@ namespace CFAProject_Backend.Controllers
         /*[HttpPost("GetListCustomers")]
         public IActionResult GetAll()
         {
-            return Ok(_context.Customers.ToList());
+            var customers = _context.Customers.ToList();
+            foreach (var customer in customers)
+            {
+                customer.Fullname ??= string.Empty;
+                // Xử lý các trường dữ liệu khác nếu cần
+            }
+            return Ok(customers);
         }*/
 
 
         public class LoginModel
         {
-            public int Id { get; set; }
             public string Email { get; set; } = null!;
             public string Password { get; set; } = null!;
         }
@@ -53,7 +58,7 @@ namespace CFAProject_Backend.Controllers
 
 
 
-       /* [HttpPost("CreateCustomer")]
+        [HttpPost("CreateCustomer")]
         public IActionResult CreateCustomer([FromBody] LoginModel request)
         {
             // Kiểm tra thông tin đầy đủ
@@ -73,16 +78,9 @@ namespace CFAProject_Backend.Controllers
             _context.Customers.Add(customer);
             _context.SaveChanges();
 
-            // Lấy giá trị ID ngay sau khi thêm bản ghi mới
-            string sql = "SELECT SCOPE_IDENTITY() AS CustomerId";
-            int newId = _context.Customers.FromSqlRaw(sql).Select(c => c.Id).FirstOrDefault();
-
-            // Cập nhật giá trị ID cho đối tượng Customer
-            customer.Id = newId;
-
             // Trả về đối tượng Customer đã được tạo mới
             return Ok(customer);
-        }*/
+        }
 
 
 
