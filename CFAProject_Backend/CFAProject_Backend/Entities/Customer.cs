@@ -21,15 +21,18 @@ namespace CFAProject_Backend.Entities
         /// <summary>
         /// Họ và tên
         /// </summary>
-        public string Fullname { get; set; } = null;
+      
+        public string? Fullname { get; set; }
         /// <summary>
         /// Email
         /// </summary>
-        public string Email { get; set; } = null!;
+        public string? Email { get; set; }
         /// <summary>
         /// Hình
         /// </summary>
-        public string Photo { get; set; } = null!;
+    
+
+        public string? Photo { get; set; }
         /// <summary>
         /// Đã kích hoạt hay chưa
         /// </summary>

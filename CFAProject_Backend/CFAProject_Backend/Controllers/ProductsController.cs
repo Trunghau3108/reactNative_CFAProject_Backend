@@ -33,7 +33,8 @@ namespace CFAProject_Backend.Controllers
                 return BadRequest("Invalid request body");
             }
 
-            if (!requestBody.TryGetProperty("id", out JsonElement idElement) || !idElement.TryGetInt32(out int id))
+            if (!requestBody.TryGetProperty("id",
+                out JsonElement idElement) || !idElement.TryGetInt32(out int id))
             {
                 return BadRequest("Invalid category ID");
             }
