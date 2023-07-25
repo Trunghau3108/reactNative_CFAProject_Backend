@@ -4,8 +4,8 @@
     "\\CFAProject_Backend",
     "\\CFAProject_Backend\\CFAProject_Backend",
     "\\CFAProject_Backend\\CFAProject_Backend\\Controllers",
-    "\\CFAProject_Backend\\CFAProject_Backend\\Entities"
+    "\\CFAProject_Backend\\CFAProject_Backend\\Models"
   ],
-  "SelectedNode": "\\CFAProject_Backend\\CFAProject_Backend\\Controllers\\CustomersController.cs",
+  "SelectedNode": "\\CFAProject_Backend\\CFAProject_Backend\\Controllers\\ProductsController.cs",
   "PreviewInSolutionExplorer": false
 }

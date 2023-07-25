@@ -1,4 +1,4 @@
-using CFAProject_Backend.Entities;
+using CFAProject_Backend.Models;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);

@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace CFAProject_Backend.Entities
+namespace CFAProject_Backend.Models
 {
     public partial class Product
     {
         public Product()
         {
+            Automotives = new HashSet<Automotive>();
             OrderDetails = new HashSet<OrderDetail>();
         }
 
@@ -52,10 +53,11 @@ namespace CFAProject_Backend.Entities
         public bool Special { get; set; }
         public bool Latest { get; set; }
         public int Views { get; set; }
+        public string? New { get; set; }
 
         public virtual Category Category { get; set; } = null!;
         public virtual Supplier Supplier { get; set; } = null!;
+        public virtual ICollection<Automotive> Automotives { get; set; }
         public virtual ICollection<OrderDetail> OrderDetails { get; set; }
-        public object Automotive { get; internal set; }
     }
 }

@@ -1,4 +1,4 @@
-﻿using CFAProject_Backend.Entities;
+﻿using CFAProject_Backend.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace CFAProject_Backend.Entities
+namespace CFAProject_Backend.Models
 {
     public partial class CFAProjectContext : DbContext
     {
@@ -16,6 +16,7 @@ namespace CFAProject_Backend.Entities
         {
         }
 
+        public virtual DbSet<Automotive> Automotives { get; set; } = null!;
         public virtual DbSet<Category> Categories { get; set; } = null!;
         public virtual DbSet<Customer> Customers { get; set; } = null!;
         public virtual DbSet<Order> Orders { get; set; } = null!;
@@ -32,14 +33,55 @@ namespace CFAProject_Backend.Entities
         {
             if (!optionsBuilder.IsConfigured)
             {
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
                 optionsBuilder.UseSqlServer("Data Source=LAPTOP-VC8S9CTI\\TRUNGHAU;Initial Catalog=CFAProject;Integrated Security=True");
             }
         }
 
-
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Automotive>(entity =>
+            {
+                entity.ToTable("Automotive");
+
+                entity.Property(e => e.Ac)
+                    .HasColumnName("AC")
+                    .HasDefaultValueSql("((0))")
+                    .HasComment("Tiện ích của xe");
+
+                entity.Property(e => e.Bluetooth)
+                    .HasDefaultValueSql("((0))")
+                    .HasComment("Tiện ích của xe");
+
+                entity.Property(e => e.Capacity)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Engine)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Fuel).HasMaxLength(50);
+
+                entity.Property(e => e.Gps)
+                    .HasColumnName("GPS")
+                    .HasDefaultValueSql("((0))")
+                    .HasComment("Tiện ích của xe");
+
+                entity.Property(e => e.ProductId).HasColumnName("ProductID");
+
+                entity.Property(e => e.Usb)
+                    .HasColumnName("USB")
+                    .HasDefaultValueSql("((0))")
+                    .HasComment("Tiện ích của xe");
+
+                entity.HasOne(d => d.Product)
+                    .WithMany(p => p.Automotives)
+                    .HasForeignKey(d => d.ProductId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Automotive_Products");
+            });
+
             modelBuilder.Entity<Category>(entity =>
             {
                 entity.Property(e => e.Id).HasComment("Mã loại");
@@ -50,15 +92,19 @@ namespace CFAProject_Backend.Entities
                     .HasMaxLength(50)
                     .HasColumnName("NameVN")
                     .HasComment("Tên chủng loại");
+
+                entity.Property(e => e.TypeCar)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
             });
 
             modelBuilder.Entity<Customer>(entity =>
             {
-                entity.Property(e => e.Id)
-                    .HasMaxLength(20)
-                    .HasComment("Mã khách hàng");
+                entity.Property(e => e.Id).HasComment("Mã khách hàng");
 
-                entity.Property(e => e.Activated).HasComment("Đã kích hoạt hay chưa");
+                entity.Property(e => e.Activated)
+                    .HasDefaultValueSql("((0))")
+                    .HasComment("Đã kích hoạt hay chưa");
 
                 entity.Property(e => e.Email)
                     .HasMaxLength(50)
@@ -83,15 +129,15 @@ namespace CFAProject_Backend.Entities
                 entity.Property(e => e.Id).HasComment("Mã hóa đơn");
 
                 entity.Property(e => e.Address)
-                    .HasMaxLength(60)
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
                     .HasComment("Địa chỉ nhận");
 
-                entity.Property(e => e.CustomerId)
-                    .HasMaxLength(20)
-                    .HasComment("Mã khách hàng");
+                entity.Property(e => e.CustomerId).HasComment("Mã khách hàng");
 
                 entity.Property(e => e.Description)
                     .HasMaxLength(1000)
+                    .IsUnicode(false)
                     .HasComment("Ghi chú thêm");
 
                 entity.Property(e => e.OrderDate)
@@ -99,17 +145,19 @@ namespace CFAProject_Backend.Entities
                     .HasDefaultValueSql("(getdate())")
                     .HasComment("Ngày đặt hàng");
 
-                entity.Property(e => e.Receiver)
+                entity.Property(e => e.Receipt)
                     .HasMaxLength(50)
+                    .IsUnicode(false)
                     .HasComment("Tên người nhận");
 
-                entity.Property(e => e.RequireDate)
+                entity.Property(e => e.ReturnDate)
                     .HasColumnType("datetime")
                     .HasComment("Ngày cần có hàng");
 
                 entity.HasOne(d => d.Customer)
                     .WithMany(p => p.Orders)
                     .HasForeignKey(d => d.CustomerId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Orders_Customers");
             });
 
@@ -117,13 +165,21 @@ namespace CFAProject_Backend.Entities
             {
                 entity.Property(e => e.Id).HasComment("Mã chi tiết");
 
+                entity.Property(e => e.OrderDate).HasColumnType("datetime");
+
                 entity.Property(e => e.OrderId).HasComment("Mã hóa đơn");
+
+                entity.Property(e => e.PaymentMethod)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.ProductId).HasComment("Mã hàng hóa");
 
                 entity.Property(e => e.Quantity)
                     .HasDefaultValueSql("((1))")
                     .HasComment("Số lượng mua");
+
+                entity.Property(e => e.ReturnDate).HasColumnType("datetime");
 
                 entity.Property(e => e.UnitPrice).HasComment("Đơn giá bán");
 
@@ -163,6 +219,11 @@ namespace CFAProject_Backend.Entities
                 entity.Property(e => e.Name)
                     .HasMaxLength(40)
                     .HasComment("Tên hàng hóa");
+
+                entity.Property(e => e.New)
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
+                    .HasColumnName("new");
 
                 entity.Property(e => e.ProductDate)
                     .HasColumnType("datetime")
@@ -241,8 +302,6 @@ namespace CFAProject_Backend.Entities
 
             modelBuilder.Entity<User>(entity =>
             {
-                entity.Property(e => e.Id).HasMaxLength(50);
-
                 entity.Property(e => e.Email).HasMaxLength(50);
 
                 entity.Property(e => e.FullName).HasMaxLength(50);
@@ -255,8 +314,6 @@ namespace CFAProject_Backend.Entities
             modelBuilder.Entity<UserRole>(entity =>
             {
                 entity.Property(e => e.RoleId).HasMaxLength(50);
-
-                entity.Property(e => e.UserId).HasMaxLength(50);
 
                 entity.HasOne(d => d.Role)
                     .WithMany(p => p.UserRoles)
