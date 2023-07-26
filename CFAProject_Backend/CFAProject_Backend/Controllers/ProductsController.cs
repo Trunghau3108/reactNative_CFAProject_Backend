@@ -81,19 +81,28 @@ namespace CFAProject_Backend.Controllers
             // Thực hiện tìm kiếm nếu có thông tin tìm kiếm từ người dùng
             if (searchModel != null && !string.IsNullOrEmpty(searchModel.SearchQuery))
             {
-                query = query.Where(p =>
-                    p.Id.Equals(searchModel.SearchQuery) ||
-                    p.Name.Contains(searchModel.SearchQuery) ||
-                    p.Description.Contains(searchModel.SearchQuery) ||
-                    p.Category.TypeCar.Contains(searchModel.SearchQuery)
-                // Thêm các tiêu chí tìm kiếm khác tại đây
-                // Ví dụ: p.Automotives.Any(a => a.Fuel.Contains(searchModel.SearchQuery))
-                );
+                if (int.TryParse(searchModel.SearchQuery, out int searchId))
+                {
+                    query = query.Where(p =>
+                        p.Id == searchId 
+                    );
+                }
+                else
+                {
+                    query = query.Where(p =>
+                        p.Name.Contains(searchModel.SearchQuery) ||
+                        p.Description.Contains(searchModel.SearchQuery) ||
+                        p.Category.TypeCar.Contains(searchModel.SearchQuery)
+                    // Add other search criteria here if needed
+                    // Example: p.Automotives.Any(a => a.Fuel.Contains(searchModel.SearchQuery))
+                    );
+                }
             }
             else
             {
-                return BadRequest("error");
+                return BadRequest("Lỗi rồi");
             }
+
 
             var result = query.Select(p => new
             {
@@ -112,7 +121,7 @@ namespace CFAProject_Backend.Controllers
                 Category = new
                 {
                     p.Category.TypeCar,
-                    // Include other category properties you want in the result
+                    
                 },
                 Automotives = p.Automotives.Select(a => new
                 {
@@ -126,11 +135,18 @@ namespace CFAProject_Backend.Controllers
                     a.Bluetooth,
                     a.Capacity,
                     a.Driver,
-                    // Include other automotive properties you want in the result
+                   
                 }).ToList()
             }).ToList();
 
-            return Ok(result);
+            if (result.Any())
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return NotFound("Không tìm thấy xe");
+            }
         }
 
 
