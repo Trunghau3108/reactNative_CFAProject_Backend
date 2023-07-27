@@ -41,8 +41,12 @@ namespace CFAProject_Backend.Models
         public string? Description { get; set; }
         public double Amount { get; set; }
         public string PaymentMethod { get; set; } = null!;
+        /// <summary>
+        /// Tình trạng thuê
+        /// </summary>
+        public bool? StatusRent { get; set; }
 
-        public virtual Customer Customer { get; set; } = null!;
+        public virtual Customer? Customer { get; set; } = null!;
         public virtual ICollection<OrderDetail> OrderDetails { get; set; }
     }
 }

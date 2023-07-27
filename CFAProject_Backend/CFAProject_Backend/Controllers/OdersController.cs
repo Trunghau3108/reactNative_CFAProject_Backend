@@ -22,15 +22,30 @@ namespace CFAProject_Backend.Controllers
 
 
         [HttpPost("CreateOrder")]
-        public IActionResult CreateOrder([FromBody] Order order)
+        public IActionResult CreateNewOrder([FromBody] Order order)
         {
-            _context.Orders.Add(order);
+            Order newOrder = new Order
+            {
+                ProductId = order.ProductId,
+                CustomerId = order.CustomerId,
+                OrderDate = order.OrderDate,
+                ReturnDate = order.ReturnDate,
+                Receipt = order.Receipt,
+                Address = order.Address,
+                Description = order.Description,
+                Amount = order.Amount,
+                PaymentMethod = order.PaymentMethod,
+                StatusRent = true,
+            };
+
+            // Add the new Order to the Orders DbSet
+            _context.Orders.Add(newOrder);
             _context.SaveChanges();
 
             // Lấy ID của bản ghi vừa insert
-            int orderId = order.Id;
-            int productId = order.ProductId;
-            int customerId = order.CustomerId;
+            int orderId = newOrder.Id;
+            int productId = newOrder.ProductId;
+            int customerId = newOrder.CustomerId;
 
             // Fetch the related Product and Customer data based on their IDs
             Product product = _context.Products.FirstOrDefault(p => p.Id == productId);
@@ -50,10 +65,10 @@ namespace CFAProject_Backend.Controllers
                 UnitPrice = product.UnitPrice,
                 Quantity = product.Quantity,
                 Discount = product.Discount,
-                OrderDate = order.OrderDate,
-                ReturnDate = order.ReturnDate,
+                OrderDate = newOrder.OrderDate,
+                ReturnDate = newOrder.ReturnDate,
                 SupplierId = product.SupplierId,
-                PaymentMethod = order.PaymentMethod,
+                PaymentMethod = newOrder.PaymentMethod,
                 CustomerName = customer.Fullname,
                 CustomerEmail = customer.Email
             };
@@ -62,7 +77,7 @@ namespace CFAProject_Backend.Controllers
             _context.OrderDetails.Add(orderDetail);
             _context.SaveChanges();
 
-            return Ok();
+            return Ok("Tạo hóa đơn thành công");
         }
 
     }

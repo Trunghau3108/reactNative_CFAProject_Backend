@@ -103,7 +103,7 @@ namespace CFAProject_Backend.Models
                 entity.Property(e => e.Id).HasComment("Mã khách hàng");
 
                 entity.Property(e => e.Activated)
-                    .HasDefaultValueSql("((0))")
+                    .HasDefaultValueSql("((1))")
                     .HasComment("Đã kích hoạt hay chưa");
 
                 entity.Property(e => e.Email)
@@ -157,6 +157,10 @@ namespace CFAProject_Backend.Models
                 entity.Property(e => e.ReturnDate)
                     .HasColumnType("datetime")
                     .HasComment("Ngày cần có hàng");
+
+                entity.Property(e => e.StatusRent)
+                    .HasDefaultValueSql("((0))")
+                    .HasComment("Tình trạng thuê");
 
                 entity.HasOne(d => d.Customer)
                     .WithMany(p => p.Orders)

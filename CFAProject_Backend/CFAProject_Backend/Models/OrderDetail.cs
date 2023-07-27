@@ -32,6 +32,5 @@ namespace CFAProject_Backend.Models
         public string CustomerEmail { get; set; } = null!;
 
         public virtual Order Order { get; set; } = null!;
-       
     }
 }
