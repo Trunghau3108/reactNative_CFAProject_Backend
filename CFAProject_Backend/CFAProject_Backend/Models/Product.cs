@@ -8,7 +8,6 @@ namespace CFAProject_Backend.Models
         public Product()
         {
             Automotives = new HashSet<Automotive>();
-            OrderDetails = new HashSet<OrderDetail>();
         }
 
         /// <summary>
@@ -58,6 +57,5 @@ namespace CFAProject_Backend.Models
         public virtual Category Category { get; set; } = null!;
         public virtual Supplier Supplier { get; set; } = null!;
         public virtual ICollection<Automotive> Automotives { get; set; }
-        public virtual ICollection<OrderDetail> OrderDetails { get; set; }
     }
 }

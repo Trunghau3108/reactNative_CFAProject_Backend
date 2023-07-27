@@ -145,6 +145,10 @@ namespace CFAProject_Backend.Models
                     .HasDefaultValueSql("(getdate())")
                     .HasComment("Ngày đặt hàng");
 
+                entity.Property(e => e.PaymentMethod)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.Receipt)
                     .HasMaxLength(50)
                     .IsUnicode(false)
@@ -165,7 +169,9 @@ namespace CFAProject_Backend.Models
             {
                 entity.Property(e => e.Id).HasComment("Mã chi tiết");
 
-                entity.Property(e => e.Discount).HasDefaultValueSql("((0))");
+                entity.Property(e => e.CustomerEmail).HasMaxLength(50);
+
+                entity.Property(e => e.CustomerName).HasMaxLength(50);
 
                 entity.Property(e => e.OrderDate).HasColumnType("datetime");
 
@@ -175,7 +181,7 @@ namespace CFAProject_Backend.Models
                     .HasMaxLength(50)
                     .IsUnicode(false);
 
-                entity.Property(e => e.ProductId).HasComment("Mã hàng hóa");
+                entity.Property(e => e.ProductName).HasMaxLength(50);
 
                 entity.Property(e => e.Quantity)
                     .HasDefaultValueSql("((1))")
@@ -183,18 +189,16 @@ namespace CFAProject_Backend.Models
 
                 entity.Property(e => e.ReturnDate).HasColumnType("datetime");
 
+                entity.Property(e => e.SupplierId)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.UnitPrice).HasComment("Đơn giá bán");
 
                 entity.HasOne(d => d.Order)
                     .WithMany(p => p.OrderDetails)
                     .HasForeignKey(d => d.OrderId)
                     .HasConstraintName("FK_OrderDetails_Orders");
-
-                entity.HasOne(d => d.Product)
-                    .WithMany(p => p.OrderDetails)
-                    .HasForeignKey(d => d.ProductId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_OrderDetails_Products");
             });
 
             modelBuilder.Entity<Product>(entity =>

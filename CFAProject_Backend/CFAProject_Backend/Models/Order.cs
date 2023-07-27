@@ -14,7 +14,7 @@ namespace CFAProject_Backend.Models
         /// Mã hóa đơn
         /// </summary>
         public int Id { get; set; }
-        public int? ProductId { get; set; }
+        public int ProductId { get; set; }
         /// <summary>
         /// Mã khách hàng
         /// </summary>
@@ -40,6 +40,7 @@ namespace CFAProject_Backend.Models
         /// </summary>
         public string? Description { get; set; }
         public double Amount { get; set; }
+        public string PaymentMethod { get; set; } = null!;
 
         public virtual Customer Customer { get; set; } = null!;
         public virtual ICollection<OrderDetail> OrderDetails { get; set; }

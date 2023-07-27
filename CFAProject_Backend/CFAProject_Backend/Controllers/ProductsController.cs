@@ -18,7 +18,7 @@ namespace CFAProject_Backend.Controllers
 
         public class ProductSearchModel
         {
-            public string? SearchIdProduct { get; set; }
+            public int? SearchIdProduct { get; set; }
             public int? Seats { get; set; } // Chỉ số ghế, kiểu int?, cho phép truyền null nếu không cần tìm theo điều kiện này
             public string? TypeCar { get; set; }
             public string? Id { get; set; } // Loại xe, kiểu string
@@ -29,10 +29,10 @@ namespace CFAProject_Backend.Controllers
         public IActionResult GetListProductWithAutomotive()
         {
             var productsWithAutomotives = _context.Products
-               .Include(p => p.Automotives).Include(z => z.Category) // Include the 'Automotives' navigation property
+               .Include(p => p.Automotives).Include(z => z.Category)
                .ToList();
 
-            // Project the results to the desired format
+           
             var result = productsWithAutomotives.Select(p => new
             {
                 p.Id,
@@ -48,10 +48,8 @@ namespace CFAProject_Backend.Controllers
                 Category = new
                 {
                     p.Category.TypeCar,
-                    // Include other category properties you want in the result
+                    
                 },
-
-                // Include other product properties you want in the result
 
                 Automotives = p.Automotives.Select(a => new
                 {
@@ -86,10 +84,10 @@ namespace CFAProject_Backend.Controllers
             /*int searchQueryInt;
             bool isSearchQueryInt = int.TryParse(searchModel.SearchQuery, out searchQueryInt);*/
             // Thực hiện tìm kiếm nếu có thông tin tìm kiếm từ người dùng
-            if (searchModel != null && !string.IsNullOrEmpty(searchModel.SearchIdProduct))
+            if (searchModel != null && searchModel.SearchIdProduct.HasValue)
             {
                 query = query.Where(p =>
-                    p.Id.ToString().Contains(searchModel.SearchIdProduct) /*||
+                    p.Id == searchModel.SearchIdProduct.Value /*||
                     (isSearchQueryInt && p.Automotives.Any(a => a.Seats == searchQueryInt)) ||
                     p.Category.TypeCar.Contains(searchModel.SearchQuery)*/
                 );
