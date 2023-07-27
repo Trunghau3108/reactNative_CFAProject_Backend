@@ -14,6 +14,7 @@ namespace CFAProject_Backend.Models
         /// Mã hóa đơn
         /// </summary>
         public int Id { get; set; }
+        public int? ProductId { get; set; }
         /// <summary>
         /// Mã khách hàng
         /// </summary>

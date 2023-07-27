@@ -3,11 +3,9 @@
     "",
     "\\CFAProject_Backend",
     "\\CFAProject_Backend\\CFAProject_Backend",
-    "\\CFAProject_Backend\\CFAProject_Backend\\bin\\Debug",
-    "\\CFAProject_Backend\\CFAProject_Backend\\bin\\Debug\\net6.0\\runtimes",
     "\\CFAProject_Backend\\CFAProject_Backend\\Controllers",
     "\\CFAProject_Backend\\CFAProject_Backend\\Models"
   ],
-  "SelectedNode": "\\CFAProject_Backend\\CFAProject_Backend\\appsettings.json",
+  "SelectedNode": "\\CFAProject_Backend\\CFAProject_Backend\\Controllers\\ProductsController.cs",
   "PreviewInSolutionExplorer": false
 }

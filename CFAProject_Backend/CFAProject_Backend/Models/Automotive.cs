@@ -28,6 +28,7 @@ namespace CFAProject_Backend.Models
         public string? Engine { get; set; }
         public string? Capacity { get; set; }
         public int? Seats { get; set; }
+        public double? Location { get; set; }
 
         public virtual Product Product { get; set; } = null!;
     }

@@ -25,7 +25,7 @@ namespace CFAProject_Backend.Models
         /// Số lượng mua
         /// </summary>
         public int Quantity { get; set; }
-        public double Discount { get; set; }
+        public double? Discount { get; set; }
         public DateTime OrderDate { get; set; }
         public DateTime ReturnDate { get; set; }
         public string PaymentMethod { get; set; } = null!;

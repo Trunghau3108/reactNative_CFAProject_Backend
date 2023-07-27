@@ -165,6 +165,8 @@ namespace CFAProject_Backend.Models
             {
                 entity.Property(e => e.Id).HasComment("Mã chi tiết");
 
+                entity.Property(e => e.Discount).HasDefaultValueSql("((0))");
+
                 entity.Property(e => e.OrderDate).HasColumnType("datetime");
 
                 entity.Property(e => e.OrderId).HasComment("Mã hóa đơn");
@@ -212,7 +214,6 @@ namespace CFAProject_Backend.Models
                 entity.Property(e => e.Discount).HasDefaultValueSql("(rand())");
 
                 entity.Property(e => e.Image)
-                    .HasMaxLength(50)
                     .HasDefaultValueSql("(N'Product.gif')")
                     .HasComment("Hình ảnh");
 

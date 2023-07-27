@@ -51,6 +51,7 @@ namespace CFAProject_Backend.Controllers
                 // Xử lý đăng nhập thành công với customer đã tìm thấy
                 return Ok(customerDTO);
             }
+            
             else
             {
                 // Không tìm thấy khách hàng phù hợp hoặc thông tin đăng nhập không hợp lệ
@@ -108,10 +109,24 @@ namespace CFAProject_Backend.Controllers
             {
                 return NotFound(); // Return HTTP 404 Not Found if the category is not found
             }
+            else if(!string.IsNullOrEmpty(req.Fullname) && !string.IsNullOrEmpty(req.Password))
+            {
+                customer.Fullname = req.Fullname;
+                customer.Password = req.Password;
+            }
+            else if (!string.IsNullOrEmpty(req.Fullname))
+            {
+                customer.Fullname = req.Fullname;
+            }
+            else if (!string.IsNullOrEmpty(req.Password))
+            {
+                customer.Password = req.Password;
+            }
+            else
+            {
+                return BadRequest("Lỗi rồi mấy chế ơi");
+            }
 
-            // Update the category properties with the values from the model
-            customer.Fullname = req.Fullname;
-            customer.Password = req.Password;
 
             // Save the changes to the database
             _context.SaveChanges();

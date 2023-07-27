@@ -18,7 +18,10 @@ namespace CFAProject_Backend.Controllers
 
         public class ProductSearchModel
         {
-            public string SearchQuery { get; set; }
+            public string? SearchIdProduct { get; set; }
+            public int? Seats { get; set; } // Chỉ số ghế, kiểu int?, cho phép truyền null nếu không cần tìm theo điều kiện này
+            public string? TypeCar { get; set; }
+            public string? Id { get; set; } // Loại xe, kiểu string
             // Các thuộc tính tìm kiếm khác nếu cần
         }
 
@@ -39,6 +42,7 @@ namespace CFAProject_Backend.Controllers
                 p.UnitPrice,
                 p.SupplierId,
                 p.Views,
+                p.Discount,
 
 
                 Category = new
@@ -61,6 +65,7 @@ namespace CFAProject_Backend.Controllers
                     a.Bluetooth,
                     a.Capacity,
                     a.Driver,
+                    a.Location
 
                     // Include other automotive properties you want in the result
                 }).ToList()
@@ -78,25 +83,48 @@ namespace CFAProject_Backend.Controllers
               .Include(p => p.Category)
               .AsQueryable();
 
+            /*int searchQueryInt;
+            bool isSearchQueryInt = int.TryParse(searchModel.SearchQuery, out searchQueryInt);*/
             // Thực hiện tìm kiếm nếu có thông tin tìm kiếm từ người dùng
-            if (searchModel != null && !string.IsNullOrEmpty(searchModel.SearchQuery))
+            if (searchModel != null && !string.IsNullOrEmpty(searchModel.SearchIdProduct))
             {
-                if (int.TryParse(searchModel.SearchQuery, out int searchId))
-                {
-                    query = query.Where(p =>
-                        p.Id == searchId 
-                    );
-                }
-                else
-                {
-                    query = query.Where(p =>
-                        p.Name.Contains(searchModel.SearchQuery) ||
-                        p.Description.Contains(searchModel.SearchQuery) ||
-                        p.Category.TypeCar.Contains(searchModel.SearchQuery)
-                    // Add other search criteria here if needed
-                    // Example: p.Automotives.Any(a => a.Fuel.Contains(searchModel.SearchQuery))
-                    );
-                }
+                query = query.Where(p =>
+                    p.Id.ToString().Contains(searchModel.SearchIdProduct) /*||
+                    (isSearchQueryInt && p.Automotives.Any(a => a.Seats == searchQueryInt)) ||
+                    p.Category.TypeCar.Contains(searchModel.SearchQuery)*/
+                );
+            }
+            // Nếu cả đều có value
+            else if(searchModel.Seats.HasValue && !string.IsNullOrEmpty(searchModel.TypeCar) && !string.IsNullOrEmpty(searchModel.Id))
+            {
+                query = query.Where(p =>
+                    p.Automotives.Any(a => a.Seats == searchModel.Seats.Value) &&
+                    p.Category.TypeCar.Contains(searchModel.TypeCar) &&
+                    p.Supplier.Id.Contains(searchModel.Id)
+                );
+            }
+            //Nếu Seats == null và ID == "" thì lọc TypeCar
+            else if (!searchModel.Seats.HasValue && !string.IsNullOrEmpty(searchModel.TypeCar) && string.IsNullOrEmpty(searchModel.Id))
+            {
+                query = query.Where(p =>
+                    p.Category.TypeCar.Contains(searchModel.TypeCar)
+                );
+            }
+            //Nếu Seats có value nhưng Id == "" thì lọc theo Seats và typecar
+            else if (searchModel.Seats.HasValue && !string.IsNullOrEmpty(searchModel.TypeCar) && string.IsNullOrEmpty(searchModel.Id))
+            {
+                query = query.Where(p =>
+                    p.Category.TypeCar.Contains(searchModel.TypeCar) &&
+                    p.Automotives.Any(a => a.Seats == searchModel.Seats.Value)
+                );
+            }
+            //Trường hợp còn lại
+            else if (!searchModel.Seats.HasValue && !string.IsNullOrEmpty(searchModel.TypeCar) && !string.IsNullOrEmpty(searchModel.Id))
+            {
+                query = query.Where(p =>
+                    p.Category.TypeCar.Contains(searchModel.TypeCar) &&
+                    p.Supplier.Id.Contains(searchModel.Id)
+                );
             }
             else
             {
@@ -145,42 +173,7 @@ namespace CFAProject_Backend.Controllers
             }
             else
             {
-                return NotFound("Không tìm thấy xe");
-            }
-        }
-
-
-        //GetCategory By ID
-        [HttpPost("GetProductById")]
-        public IActionResult GetProductById([FromBody] JsonElement requestBody)
-        {
-            try
-            {
-                if (requestBody.ValueKind != JsonValueKind.Object)
-                {
-                    return BadRequest("Invalid request body");
-                }
-
-                if (!requestBody.TryGetProperty("id",
-                    out JsonElement idElement) || !idElement.TryGetInt32(out int id))
-                {
-                    return BadRequest("Invalid product ID");
-                }
-
-                var product = _context.Products.Include(c => c.Automotives).FirstOrDefault(c => c.Id == id);
-
-                if (product == null)
-                {
-                    return NotFound();
-                }
-              
-
-
-                return Ok(product);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex);
+                return NotFound("Không có dữ liệu trong hệ thống");
             }
         }
     }
