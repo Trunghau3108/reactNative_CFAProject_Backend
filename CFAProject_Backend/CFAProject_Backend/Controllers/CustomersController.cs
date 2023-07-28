@@ -102,8 +102,9 @@ namespace CFAProject_Backend.Controllers
         public IActionResult UpdateCategory([FromBody] Customer req)
         {
             int id = req.Id;
+            string email = req.Email;
 
-            var customer = _context.Customers.FirstOrDefault(c => c.Id == id);
+            var customer = _context.Customers.FirstOrDefault(c => c.Id == id || c.Email == email);
 
             if (customer == null)
             {

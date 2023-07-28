@@ -25,7 +25,7 @@ namespace CFAProject_Backend.Models
         /// <summary>
         /// Email
         /// </summary>
-        public string Email { get; set; } = null!;
+        public string? Email { get; set; } = null!;
         /// <summary>
         /// Hình
         /// </summary>
