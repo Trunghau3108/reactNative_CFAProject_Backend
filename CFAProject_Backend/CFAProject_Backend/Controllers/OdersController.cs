@@ -98,17 +98,19 @@ namespace CFAProject_Backend.Controllers
                 return BadRequest("Invalid customerId" + customerIdElement);
             }
 
-            var order = _context.Orders
-                .FirstOrDefault(o => o.CustomerId == id && o.StatusRent == false);
+            var orders = _context.Orders
+            .Where(o => o.CustomerId == id && o.StatusRent == false)
+            .ToList();
 
-            if (order == null)
+            if (orders.Count == 0)
             {
-                // Không tìm thấy khách hàng trong bảng Order hoặc không có đơn hàng nào có trạng thái false
                 return NotFound("Không tìm thấy đơn hàng cho khách hàng có mã: " + id);
             }
 
+            var productIds = orders.Select(o => o.ProductId).ToList();
+
             var products = _context.Products.Include(p => p.Automotives)
-                .Where(p => p.Id == order.ProductId)
+                .Where(p => productIds.Contains(p.Id))
                 .ToList();
 
             var result = products.Select(p => new
@@ -143,7 +145,6 @@ namespace CFAProject_Backend.Controllers
             }).ToList();
 
            
-
             return Ok(result);
         }
 
@@ -161,17 +162,19 @@ namespace CFAProject_Backend.Controllers
                 return BadRequest("Invalid customerId" + customerIdElement);
             }
 
-            var order = _context.Orders
-                .FirstOrDefault(o => o.CustomerId == id && o.StatusRent == true);
+            var orders = _context.Orders
+            .Where(o => o.CustomerId == id && o.StatusRent == true)
+            .ToList();
 
-            if (order == null )
+            if (orders.Count == 0)
             {
-                // Không tìm thấy khách hàng trong bảng Order hoặc không có đơn hàng nào có trạng thái false
                 return NotFound("Không tìm thấy đơn hàng cho khách hàng có mã: " + id);
             }
 
+            var productIds = orders.Select(o => o.ProductId).ToList();
+
             var products = _context.Products.Include(p => p.Automotives)
-                .Where(p => p.Id == order.ProductId)
+                .Where(p => productIds.Contains(p.Id))
                 .ToList();
 
             var result = products.Select(p => new
@@ -208,39 +211,49 @@ namespace CFAProject_Backend.Controllers
         }
 
 
-        /*[HttpPost("UpdateStatusRent")]
-        public IActionResult UpdateStatus([FromBody] JsonElement orderId)
+        [HttpPost("UpdateStatusRent")]
+        public IActionResult UpdateStatusRent([FromBody] JsonElement requestData)
         {
-            if (orderId.ValueKind != JsonValueKind.Object)
+            if (requestData.ValueKind != JsonValueKind.Object)
             {
                 return BadRequest("Invalid request body");
             }
 
-            if (!orderId.TryGetProperty("id", out JsonElement idElement) || !idElement.TryGetInt32(out int id))
+            if (!requestData.TryGetProperty("customerId", out JsonElement customerIdElement) ||
+                !customerIdElement.TryGetInt32(out int customerId))
             {
-                return BadRequest("Invalid customerId" + orderId);
+                return BadRequest("Invalid customerId");
             }
+
+            if (!requestData.TryGetProperty("productId", out JsonElement productIdElement) ||
+                !productIdElement.TryGetInt32(out int productId))
+            {
+                return BadRequest("Invalid productId");
+            }
+
+            var order = _context.Orders
+                .FirstOrDefault(o => o.CustomerId == customerId && o.ProductId == productId);
+
+            if (order == null)
+            {
+                return NotFound("Không tìm thấy đơn hàng cho khách hàng và sản phẩm có mã: " + customerId + ", " + productId);
+            }
+
+            // Update the StatusRent here
+            order.StatusRent = !order.StatusRent; // Set to the opposite value (true -> false, false -> true)
+
             try
             {
-                var order = _context.Orders.FirstOrDefault(o => o.Id == orderId);
-
-                if (order == null)
-                {
-                    return NotFound("Không tìm thấy đơn hàng có mã: " + orderId);
-                }
-
-                // Cập nhật trạng thái StatusRent từ true thành false
-                order.StatusRent = false;
-
-                _context.SaveChanges(); // Lưu thay đổi vào cơ sở dữ liệu
-
-                return Ok("Đã cập nhật trạng thái StatusRent thành false cho đơn hàng có mã: " + orderId);
+                _context.SaveChanges(); // Save the changes to the database
             }
             catch (Exception ex)
             {
-                return BadRequest("Đã xảy ra lỗi: " + ex.Message);
+                // Handle exception if there's an error while saving changes
+                return BadRequest("An error occurred while updating the StatusRent: " + ex.Message);
             }
-        }*/
+
+            return Ok("StatusRent updated successfully for order with CustomerId: " + customerId + " and ProductId: " + productId);
+        }
 
 
     }
