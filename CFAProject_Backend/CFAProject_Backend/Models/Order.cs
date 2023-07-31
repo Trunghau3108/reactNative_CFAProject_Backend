@@ -30,7 +30,7 @@ namespace CFAProject_Backend.Models
         /// <summary>
         /// Tên người nhận
         /// </summary>
-        public string Receipt { get; set; } = null!;
+        public string? Receipt { get; set; } = null!;
         /// <summary>
         /// Địa chỉ nhận
         /// </summary>

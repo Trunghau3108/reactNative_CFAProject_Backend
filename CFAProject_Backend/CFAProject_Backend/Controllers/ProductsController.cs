@@ -81,18 +81,12 @@ namespace CFAProject_Backend.Controllers
               .Include(p => p.Category)
               .AsQueryable();
 
-            /*int searchQueryInt;
-            bool isSearchQueryInt = int.TryParse(searchModel.SearchQuery, out searchQueryInt);*/
-            // Thực hiện tìm kiếm nếu có thông tin tìm kiếm từ người dùng
-            if (searchModel != null && searchModel.SearchIdProduct.HasValue)
-            {
-                query = query.Where(p =>
-                    p.Id == searchModel.SearchIdProduct.Value /*||
-                    (isSearchQueryInt && p.Automotives.Any(a => a.Seats == searchQueryInt)) ||
-                    p.Category.TypeCar.Contains(searchModel.SearchQuery)*/
-                );
-            }
             // Nếu cả đều có value
+            if (searchModel.SearchIdProduct.HasValue)
+            {
+                // Filter by the specified productId
+                query = query.Where(p => p.Id == searchModel.SearchIdProduct.Value);
+            }
             else if(searchModel.Seats.HasValue && !string.IsNullOrEmpty(searchModel.TypeCar) && !string.IsNullOrEmpty(searchModel.Id))
             {
                 query = query.Where(p =>
@@ -130,7 +124,8 @@ namespace CFAProject_Backend.Controllers
             }
 
 
-            var result = query.Select(p => new
+
+            var filteredResult = query.Select(p => new
             {
                 p.Id,
                 p.Name,
@@ -147,7 +142,7 @@ namespace CFAProject_Backend.Controllers
                 Category = new
                 {
                     p.Category.TypeCar,
-                    
+
                 },
                 Automotives = p.Automotives.Select(a => new
                 {
@@ -161,13 +156,12 @@ namespace CFAProject_Backend.Controllers
                     a.Bluetooth,
                     a.Capacity,
                     a.Driver,
-                   
+
                 }).ToList()
             }).ToList();
-
-            if (result.Any())
+            if (filteredResult.Any())
             {
-                return Ok(result);
+                return Ok(filteredResult);
             }
             else
             {

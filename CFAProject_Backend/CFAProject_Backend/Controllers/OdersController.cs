@@ -1,6 +1,11 @@
 ﻿using CFAProject_Backend.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel;
+using System.Linq;
+using System.Xml;
+using System.Text.Json;
+using Microsoft.EntityFrameworkCore;
 
 namespace CFAProject_Backend.Controllers
 {
@@ -19,7 +24,7 @@ namespace CFAProject_Backend.Controllers
         {
             return Ok(_context.Orders.ToList());
         }
-
+       
 
         [HttpPost("CreateOrder")]
         public IActionResult CreateNewOrder([FromBody] Order order)
@@ -80,6 +85,163 @@ namespace CFAProject_Backend.Controllers
             return Ok("Tạo hóa đơn thành công");
         }
 
-    }
+        [HttpPost("OrderHistory")]
+        public IActionResult GetOrderHistory([FromBody] JsonElement customerIdElement)
+        {
+            if (customerIdElement.ValueKind != JsonValueKind.Object)
+            {
+                return BadRequest("Invalid request body");
+            }
 
+            if (!customerIdElement.TryGetProperty("id", out JsonElement idElement) || !idElement.TryGetInt32(out int id))
+            {
+                return BadRequest("Invalid customerId" + customerIdElement);
+            }
+
+            var order = _context.Orders
+                .FirstOrDefault(o => o.CustomerId == id && o.StatusRent == false);
+
+            if (order == null)
+            {
+                // Không tìm thấy khách hàng trong bảng Order hoặc không có đơn hàng nào có trạng thái false
+                return NotFound("Không tìm thấy đơn hàng cho khách hàng có mã: " + id);
+            }
+
+            var products = _context.Products.Include(p => p.Automotives)
+                .Where(p => p.Id == order.ProductId)
+                .ToList();
+
+            var result = products.Select(p => new
+            {
+                p.Id,
+                p.Name,
+                p.Description,
+                p.Image,
+                p.UnitPrice,
+                p.SupplierId,
+                p.Views,
+                p.Discount,
+
+
+
+                Automotives = p.Automotives.Select(a => new
+                {
+                    a.Id,
+                    a.Fuel,
+                    a.Ac,
+                    a.Gps,
+                    a.Usb,
+                    a.Seats,
+                    a.Engine,
+                    a.Bluetooth,
+                    a.Capacity,
+                    a.Driver,
+                    a.Location
+
+                    // Include other automotive properties you want in the result
+                }).ToList()
+            }).ToList();
+
+           
+
+            return Ok(result);
+        }
+
+
+        [HttpPost("OrderPayment")]
+        public IActionResult GetOrderPayment([FromBody] JsonElement customerIdElement)
+        {
+            if (customerIdElement.ValueKind != JsonValueKind.Object)
+            {
+                return BadRequest("Invalid request body");
+            }
+
+            if (!customerIdElement.TryGetProperty("id", out JsonElement idElement) || !idElement.TryGetInt32(out int id))
+            {
+                return BadRequest("Invalid customerId" + customerIdElement);
+            }
+
+            var order = _context.Orders
+                .FirstOrDefault(o => o.CustomerId == id && o.StatusRent == true);
+
+            if (order == null )
+            {
+                // Không tìm thấy khách hàng trong bảng Order hoặc không có đơn hàng nào có trạng thái false
+                return NotFound("Không tìm thấy đơn hàng cho khách hàng có mã: " + id);
+            }
+
+            var products = _context.Products.Include(p => p.Automotives)
+                .Where(p => p.Id == order.ProductId)
+                .ToList();
+
+            var result = products.Select(p => new
+            {
+                p.Id,
+                p.Name,
+                p.Description,
+                p.Image,
+                p.UnitPrice,
+                p.SupplierId,
+                p.Views,
+                p.Discount,
+
+
+                Automotives = p.Automotives.Select(a => new
+                {
+                    a.Id,
+                    a.Fuel,
+                    a.Ac,
+                    a.Gps,
+                    a.Usb,
+                    a.Seats,
+                    a.Engine,
+                    a.Bluetooth,
+                    a.Capacity,
+                    a.Driver,
+                    a.Location
+
+                    // Include other automotive properties you want in the result
+                }).ToList()
+            }).ToList();
+
+            return Ok(result);
+        }
+
+
+        /*[HttpPost("UpdateStatusRent")]
+        public IActionResult UpdateStatus([FromBody] JsonElement orderId)
+        {
+            if (orderId.ValueKind != JsonValueKind.Object)
+            {
+                return BadRequest("Invalid request body");
+            }
+
+            if (!orderId.TryGetProperty("id", out JsonElement idElement) || !idElement.TryGetInt32(out int id))
+            {
+                return BadRequest("Invalid customerId" + orderId);
+            }
+            try
+            {
+                var order = _context.Orders.FirstOrDefault(o => o.Id == orderId);
+
+                if (order == null)
+                {
+                    return NotFound("Không tìm thấy đơn hàng có mã: " + orderId);
+                }
+
+                // Cập nhật trạng thái StatusRent từ true thành false
+                order.StatusRent = false;
+
+                _context.SaveChanges(); // Lưu thay đổi vào cơ sở dữ liệu
+
+                return Ok("Đã cập nhật trạng thái StatusRent thành false cho đơn hàng có mã: " + orderId);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Đã xảy ra lỗi: " + ex.Message);
+            }
+        }*/
+
+
+    }
 }
