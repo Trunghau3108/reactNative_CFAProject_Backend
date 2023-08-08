@@ -23,6 +23,22 @@ namespace CFAProject_Backend.Controllers
             return Ok(customers);
         }
 
+        [HttpPost("CheckMail")]
+        public IActionResult CheckMail([FromBody] Customer req)
+        {
+            var checkMail = _context.Customers.FirstOrDefault(c =>
+            c.Email == req.Email);
+            if (checkMail != null)
+            {
+                return Ok(checkMail);
+            }
+            else
+            {
+                // Không tìm thấy khách hàng phù hợp hoặc thông tin đăng nhập không hợp lệ
+                return BadRequest("Không tìm thấy email");
+            }
+        }
+
 
         public class LoginModel
         {
@@ -39,19 +55,8 @@ namespace CFAProject_Backend.Controllers
 
             if (customer != null)
             {
-                var customerDTO = new Customer
-                {
-                    Id = customer.Id,
-                    Email = customer.Email,
-                    Password = customer.Password,
-                    Fullname = customer.Fullname,
-                    Photo = customer.Photo,
-
-                };
-                // Xử lý đăng nhập thành công với customer đã tìm thấy
-                return Ok(customerDTO);
+                return Ok(customer);
             }
-            
             else
             {
                 // Không tìm thấy khách hàng phù hợp hoặc thông tin đăng nhập không hợp lệ
@@ -131,7 +136,6 @@ namespace CFAProject_Backend.Controllers
 
             // Save the changes to the database
             _context.SaveChanges();
-
             return Ok(customer); // Return the updated category as JSON
         }
     }

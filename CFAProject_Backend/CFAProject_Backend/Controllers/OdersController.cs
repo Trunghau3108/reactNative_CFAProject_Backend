@@ -125,7 +125,6 @@ namespace CFAProject_Backend.Controllers
                 p.Discount,
 
 
-
                 Automotives = p.Automotives.Select(a => new
                 {
                     a.Id,
@@ -177,38 +176,48 @@ namespace CFAProject_Backend.Controllers
                 .Where(p => productIds.Contains(p.Id))
                 .ToList();
 
-            var result = products.Select(p => new
+            var result = orders.Select(o => new
             {
-                p.Id,
-                p.Name,
-                p.Description,
-                p.Image,
-                p.UnitPrice,
-                p.SupplierId,
-                p.Views,
-                p.Discount,
+                o.Id,
+                o.OrderDate,
+                o.ReturnDate,
+                o.PaymentMethod,
+                o.Address,
+                o.Description,
 
-
-                Automotives = p.Automotives.Select(a => new
+                Products = products.Select(p => new
                 {
-                    a.Id,
-                    a.Fuel,
-                    a.Ac,
-                    a.Gps,
-                    a.Usb,
-                    a.Seats,
-                    a.Engine,
-                    a.Bluetooth,
-                    a.Capacity,
-                    a.Driver,
-                    a.Location
+                    p.Id,
+                    p.Name,
+                    p.Description,
+                    p.Image,
+                    p.UnitPrice,
+                    p.SupplierId,
+                    p.Views,
+                    p.Discount,
 
-                    // Include other automotive properties you want in the result
-                }).ToList()
-            }).ToList();
 
-            return Ok(result);
-        }
+                    Automotives = p.Automotives.Select(a => new
+                    {
+                        a.Id,
+                        a.Fuel,
+                        a.Ac,
+                        a.Gps,
+                        a.Usb,
+                        a.Seats,
+                        a.Engine,
+                        a.Bluetooth,
+                        a.Capacity,
+                        a.Driver,
+                        a.Location
+
+                        // Include other automotive properties you want in the result
+                        }).ToList()
+                    }).ToList()
+                }).ToList();
+   
+                return Ok(result);
+            }
 
 
         [HttpPost("UpdateStatusRent")]

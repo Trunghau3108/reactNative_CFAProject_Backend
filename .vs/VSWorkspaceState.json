@@ -3,8 +3,7 @@
     "",
     "\\CFAProject_Backend",
     "\\CFAProject_Backend\\CFAProject_Backend",
-    "\\CFAProject_Backend\\CFAProject_Backend\\Controllers",
-    "\\CFAProject_Backend\\CFAProject_Backend\\Models"
+    "\\CFAProject_Backend\\CFAProject_Backend\\Controllers"
   ],
   "SelectedNode": "\\CFAProject_Backend\\CFAProject_Backend\\Controllers\\OdersController.cs",
   "PreviewInSolutionExplorer": false

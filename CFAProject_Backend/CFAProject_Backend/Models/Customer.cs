@@ -17,7 +17,7 @@ namespace CFAProject_Backend.Models
         /// <summary>
         /// Mật khẩu đăng nhập
         /// </summary>
-        public string Password { get; set; } = null!;
+        public string? Password { get; set; } = null!;
         /// <summary>
         /// Họ và tên
         /// </summary>
